@@ -3,14 +3,14 @@
 const cv = document.getElementById('hero-bg');
 if (!cv) return;
 const hero = cv.parentElement, ctx = cv.getContext('2d');
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const reduce = false;   // the hero always animates (owner's choice); reduced-motion handling kept below if needed
 const TS = 14, SUB = 2;                       // tile size in CSS px, sim cells per tile side
-const SA = .45, SD = 7, TURN = .7, SPEED = 1, DECAY = .9;
+const SA = .45, SD = 7, TURN = .7, SPEED = 1.4, DECAY = .92;
 const LEVELS = 8;
 const COLORS = Array.from({ length: LEVELS }, (_, i) => {
   const k = (i + 1) / LEVELS;                 // navy → steel blue → glow → pale
   const r = Math.round(40 + 160 * k ** 1.4), g = Math.round(80 + 160 * k ** 1.1), b = Math.round(120 + 135 * k ** .8);
-  return `rgba(${r},${g},${b},${(.06 + .5 * k).toFixed(3)})`;
+  return `rgba(${r},${g},${b},${(.08 + .62 * k).toFixed(3)})`;
 });
 
 let W, H, cols, rows, SW, SH, trail, tmp, agents, mul, gridPat, peak = 1;
@@ -23,13 +23,13 @@ function size() {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   cols = Math.ceil(W / TS); rows = Math.ceil(H / TS); SW = cols * SUB; SH = rows * SUB;
   trail = new Float32Array(SW * SH); tmp = new Float32Array(SW * SH);
-  const n = Math.min(3800, Math.round(SW * SH * .2));
+  const n = Math.min(4600, Math.round(SW * SH * .24));
   agents = Array.from({ length: n }, () => ({ x: Math.random() * SW, y: Math.random() * SH, a: Math.random() * 6.283 }));
   // dim the tiles behind the hero text (centre) so it stays readable
   mul = new Float32Array(cols * rows);
   for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
     const dx = (x + .5) / cols - .5, dy = ((y + .5) / rows - .48) * 1.3, d = Math.hypot(dx, dy);
-    mul[y * cols + x] = Math.min(1, .35 + Math.max(0, d - .12) * 2.6);
+    mul[y * cols + x] = Math.min(1, .5 + Math.max(0, d - .12) * 2.6);
   }
   const p = document.createElement('canvas'); p.width = p.height = TS;
   const pc = p.getContext('2d'); pc.fillStyle = 'rgba(180,210,230,.045)'; pc.fillRect(0, 0, TS, 1); pc.fillRect(0, 0, 1, TS);
@@ -41,14 +41,22 @@ const sense = (a, o) => {
   return x >= 0 && y >= 0 && x < SW && y < SH ? trail[y * SW + x] : -1;
 };
 
+function food(px, py, r, amt) {
+  const cx = (px / TS * SUB) | 0, cy = (py / TS * SUB) | 0;
+  for (let oy = -r; oy <= r; oy++) for (let ox = -r; ox <= r; ox++) {
+    if (ox * ox + oy * oy > r * r) continue;
+    const X = cx + ox, Y = cy + oy;
+    if (X >= 0 && Y >= 0 && X < SW && Y < SH) trail[Y * SW + X] += amt;
+  }
+}
+let pulseAt = 0;
 function step() {
   // the cursor (real or autopilot) keeps dropping food, so the network grows toward it
-  const cx = (mx / TS * SUB) | 0, cy = (my / TS * SUB) | 0;
-  for (let oy = -3; oy <= 3; oy++) for (let ox = -3; ox <= 3; ox++) {
-    if (ox * ox + oy * oy > 9) continue;
-    const X = cx + ox, Y = cy + oy;
-    if (X >= 0 && Y >= 0 && X < SW && Y < SH) trail[Y * SW + X] += 1.2;
-  }
+  food(mx, my, 3, 1.4);
+  // a second, slower food source wanders on its own so the web keeps shifting
+  food(W * (.5 - .38 * Math.cos(t * .17 + 2)), H * (.5 + .3 * Math.cos(t * .27 + 1)), 3, .9);
+  // every few seconds a burst of food appears somewhere and pulls a new branch out
+  if (t > pulseAt) { pulseAt = t + 2 + Math.random() * 2; food(W * (.08 + Math.random() * .84), H * (.1 + Math.random() * .75), 6, 5); }
   for (const a of agents) {
     if (Math.random() < .002) { a.x = Math.random() * SW; a.y = Math.random() * SH; a.a = Math.random() * 6.283; }
     const l = sense(a, -SA), f = sense(a, 0), r = sense(a, SA);
@@ -98,8 +106,8 @@ function settle() {                 // set the brightness scale from the current
 }
 
 function autopilot() {               // slow drifting point when nobody is steering
-  mx = W * (.5 + .36 * Math.cos(t * .23) * Math.sin(t * .11 + 1));
-  my = H * (.5 + .34 * Math.sin(t * .31));
+  mx = W * (.5 + .38 * Math.cos(t * .39) * Math.sin(t * .19 + 1));
+  my = H * (.5 + .34 * Math.sin(t * .53));
 }
 
 addEventListener('pointermove', e => {
@@ -126,11 +134,11 @@ if (reduce) {                       // reduced motion: show the grown network as
 let last = 0;
 const loop = now => {
   requestAnimationFrame(loop);
-  if (!visible || document.hidden || now - last < 31) return;   // ~30 fps is plenty for this motion
+  if (!visible || document.hidden || now - last < 21) return;   // ~45 fps
   const steering = now - lastMove < 2500;
   if (reduce && !steering) return;     // reduced motion: only moves while the visitor moves the mouse
   last = now;
-  t += 1 / 30;
+  t += 1 / 45;
   if (!steering) autopilot();
   step(); draw();
 };

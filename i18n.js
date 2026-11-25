@@ -183,7 +183,8 @@ const D = {
   'Terrain lab: side-view tile world': ['Laboratório de terreno: mundo de tiles em visão lateral', 'Laboratorio de terreno: mundo de tiles en vista lateral'],
   'Little Sim World gameplay': ['Gameplay de Little Sim World', 'Gameplay de Little Sim World'],
   'Case Solved: The London Files gameplay': ['Gameplay de Case Solved: The London Files', 'Gameplay de Case Solved: The London Files'],
-  'Bruno Lima, Game Developer': ['Bruno Lima, Desenvolvedor de Jogos', 'Bruno Lima, Desarrollador de Videojuegos']
+  'Bruno Carvalho Lima, Game Developer': ['Bruno Carvalho Lima, Desenvolvedor de Jogos', 'Bruno Carvalho Lima, Desarrollador de Videojuegos'],
+  'Bruno Carvalho Lima': ['Bruno Carvalho Lima', 'Bruno Carvalho Lima']
 };
 
 const BIO = {
