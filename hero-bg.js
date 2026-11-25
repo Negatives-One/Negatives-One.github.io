@@ -67,11 +67,14 @@ function draw() {
   ctx.fillStyle = gridPat; ctx.fillRect(0, 0, W, H);
   const buckets = Array.from({ length: LEVELS }, () => []);
   let max = 0;
+  const live = performance.now() - lastMove < 2500, R = 110;   // instant glow under a real cursor
   for (let ty = 0; ty < rows; ty++) for (let tx = 0; tx < cols; tx++) {
     let s = 0;
     for (let sy = 0; sy < SUB; sy++) { const o = (ty * SUB + sy) * SW + tx * SUB; for (let sx = 0; sx < SUB; sx++) s += trail[o + sx]; }
     s /= SUB * SUB; if (s > max) max = s;
-    const v = Math.min(1, Math.sqrt(s / (peak * .7))) * mul[ty * cols + tx];
+    let v = Math.min(1, Math.sqrt(s / (peak * .7)));
+    if (live) { const d = Math.hypot((tx + .5) * TS - mx, (ty + .5) * TS - my); if (d < R) v = Math.max(v, (1 - d / R) ** 1.3 * .85); }
+    v *= mul[ty * cols + tx];
     const lv = Math.floor(v * LEVELS) - 1;
     if (lv >= 0) buckets[lv].push(tx, ty);
   }
@@ -119,15 +122,16 @@ if (reduce) {                       // reduced motion: show the grown network as
   mx = my = -1e4; for (let i = 0; i < 25; i++) step();   // let the cursor blob fade so only the web remains
   settle(); draw();
   new ResizeObserver(() => { for (let i = 0; i < 300; i++) { t += 1 / 60; autopilot(); step(); } mx = my = -1e4; for (let i = 0; i < 25; i++) step(); settle(); draw(); }).observe(hero);
-  return;
 }
 let last = 0;
 const loop = now => {
   requestAnimationFrame(loop);
   if (!visible || document.hidden || now - last < 31) return;   // ~30 fps is plenty for this motion
+  const steering = now - lastMove < 2500;
+  if (reduce && !steering) return;     // reduced motion: only moves while the visitor moves the mouse
   last = now;
   t += 1 / 30;
-  if (now - lastMove > 2500) autopilot();
+  if (!steering) autopilot();
   step(); draw();
 };
 requestAnimationFrame(loop);
