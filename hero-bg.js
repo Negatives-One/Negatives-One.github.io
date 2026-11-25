@@ -5,7 +5,7 @@ if (!cv) return;
 const hero = cv.parentElement, ctx = cv.getContext('2d');
 const reduce = false;   // the hero always animates (owner's choice); reduced-motion handling kept below if needed
 const TS = 14, SUB = 2;                       // tile size in CSS px, sim cells per tile side
-const SA = .45, SD = 7, TURN = .7, SPEED = 1.4, DECAY = .92;
+const SA = .6, SD = 6, TURN = .6, SPEED = 1.4, DECAY = .92;
 const LEVELS = 8;
 const COLORS = Array.from({ length: LEVELS }, (_, i) => {
   const k = (i + 1) / LEVELS;                 // navy → steel blue → glow → pale
@@ -56,9 +56,9 @@ function step() {
   // a second, slower food source wanders on its own so the web keeps shifting
   food(W * (.5 - .38 * Math.cos(t * .17 + 2)), H * (.5 + .3 * Math.cos(t * .27 + 1)), 3, .9);
   // every few seconds a burst of food appears somewhere and pulls a new branch out
-  if (t > pulseAt) { pulseAt = t + 2 + Math.random() * 2; food(W * (.08 + Math.random() * .84), H * (.1 + Math.random() * .75), 6, 5); }
+  if (t > pulseAt) { pulseAt = t + .8 + Math.random() * 1.2; food(W * (.05 + Math.random() * .9), H * (.08 + Math.random() * .8), 5, 4); }
   for (const a of agents) {
-    if (Math.random() < .002) { a.x = Math.random() * SW; a.y = Math.random() * SH; a.a = Math.random() * 6.283; }
+    if (Math.random() < .005) { a.x = Math.random() * SW; a.y = Math.random() * SH; a.a = Math.random() * 6.283; }
     const l = sense(a, -SA), f = sense(a, 0), r = sense(a, SA);
     if (f < l || f < r) a.a += l > r ? -TURN : TURN; else a.a += (Math.random() - .5) * .25;
     let nx = a.x + Math.cos(a.a) * SPEED, ny = a.y + Math.sin(a.a) * SPEED;
@@ -125,6 +125,8 @@ new ResizeObserver(() => { size(); draw(); }).observe(hero);
 new IntersectionObserver(es => es.forEach(e => visible = e.isIntersecting), { threshold: 0 }).observe(hero);
 size();
 for (let i = 0; i < 240; i++) { t += 1 / 60; autopilot(); step(); }   // start with a network already grown
+settle();
+let boost = 720;                    // then fast-forward through the first second so it opens well developed
 if (reduce) {                       // reduced motion: show the grown network as a still image
   for (let i = 0; i < 160; i++) { t += 1 / 60; autopilot(); step(); }
   mx = my = -1e4; for (let i = 0; i < 25; i++) step();   // let the cursor blob fade so only the web remains
@@ -134,7 +136,13 @@ if (reduce) {                       // reduced motion: show the grown network as
 let last = 0;
 const loop = now => {
   requestAnimationFrame(loop);
-  if (!visible || document.hidden || now - last < 21) return;   // ~45 fps
+  if (!visible || document.hidden) return;
+  if (boost > 0) {                     // fast-forward: ~12 simulation steps per frame until the boost is spent
+    const n = Math.min(boost, 12);
+    for (let i = 0; i < n; i++) { t += 1 / 60; if (now - lastMove >= 2500) autopilot(); step(); }
+    boost -= n; draw(); return;
+  }
+  if (now - last < 21) return;   // ~45 fps
   const steering = now - lastMove < 2500;
   if (reduce && !steering) return;     // reduced motion: only moves while the visitor moves the mouse
   last = now;
