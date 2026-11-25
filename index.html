@@ -255,7 +255,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:10px 22px}footer a:hover{color:#fff}
   <section id="reel" class="wrap reel">
     <div class="reel-frame">
       <video id="reel-video" controls muted playsinline preload="metadata" poster="img/showreel-poster.jpg">
-        <source src="video/showreel.mp4" type="video/mp4">
+        <source src="video/showreel.mp4?v=2" type="video/mp4">
       </video>
     </div>
     <p class="cap">Showreel 2026. Footage from the official trailers of games I worked on, plus the terrain lab.</p>
@@ -278,7 +278,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:10px 22px}footer a:hover{color:#fff}
     <article class="card" style="--i:1;--tint:rgba(15,100,153,.35)">
       <div>
         <h3>Case Solved: The London Files</h3>
-        <p>A cozy noir detective game built on logic puzzles. I worked on porting and development, getting it onto PC, PlayStation 5, Xbox, Switch, iOS and Android.</p>
+        <p>A cozy noir detective game built on logic puzzles. I worked on development and porting, getting it onto PC, PlayStation 5, Xbox, Switch, iOS and Android.</p>
         <p class="meta">Minimol Games · Unity · C# · 2026</p>
         <div class="stores">
           <a href="https://store.steampowered.com/app/4127360/">Steam</a>
@@ -327,16 +327,6 @@ footer nav{display:flex;flex-wrap:wrap;gap:10px 22px}footer a:hover{color:#fff}
         <img src="img/magic-land-2.jpg" alt="Magic Land: mini games and ranking" loading="lazy">
         <img src="img/magic-land-3.jpg" alt="Magic Land: visiting friends' worlds" loading="lazy">
       </div>
-    </article>
-
-    <article class="card" style="--i:5;--tint:rgba(125,203,255,.2)">
-      <div>
-        <h3>Vertical slices</h3>
-        <p>Vertical slices for pitching and internal validation, and web and cloud gaming projects with Piepacker / Jam.gg.</p>
-        <p class="meta">Gameplan · Unity · C# · 2022–2023</p>
-        <a class="btn" href="https://linktr.ee/NegativeOn3">Full portfolio</a>
-      </div>
-      <div class="vis" id="v-slices"></div>
     </article>
   </section>
 
@@ -460,7 +450,7 @@ public static class Platform {
   </div>
 </footer>
 
-<script src="i18n.js?v=2"></script>
+<script src="i18n.js?v=3"></script>
 <script>
 {
 const $=s=>document.querySelector(s);
@@ -507,12 +497,6 @@ window.setBio=html=>{bio.innerHTML=html;splitBio();onBio()};
 
 // --- visuals ---
 const NS='http://www.w3.org/2000/svg';
-// vertical slices
-const sl=[['Cloud build','#7dcbff'],['Gameplay loop','#2a96d6'],['Pitch prototype','#0f6499']];
-$('#v-slices').innerHTML=`<svg viewBox="0 0 500 340" preserveAspectRatio="xMidYMid slice"><rect width="500" height="340" fill="#0c1420"/>
-${sl.map((s,i)=>{const y=90+i*62;return `<g class="sl" style="animation-delay:${i*.25}s"><path d="M110 ${y+20} L200 ${y-15} L310 ${y+20} L220 ${y+55}Z" fill="${s[1]}" opacity=".9"/><path d="M110 ${y+20} L110 ${y+32} L220 ${y+67} L220 ${y+55}Z" fill="${s[1]}" opacity=".55"/><path d="M220 ${y+55} L220 ${y+67} L310 ${y+32} L310 ${y+20}Z" fill="${s[1]}" opacity=".35"/><line x1="315" y1="${y+20}" x2="345" y2="${y+20}" stroke="rgba(255,255,255,.3)"/><text x="352" y="${y+25}" font-family="Hanken Grotesk, sans-serif" font-size="14" fill="#d1dae0">${s[0]}</text></g>`}).reverse().join('')}
-<style>.sl{animation:bob 3.2s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-6px)}}</style></svg>`;
-
 // tiny C# highlighter for the code blocks
 window.hlCode=src=>{
   const e=t=>t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
@@ -535,7 +519,7 @@ const reel=$('#reel-video');let reelStarted=false;
 new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!reelStarted&&!matchMedia('(prefers-reduced-motion: reduce)').matches){reelStarted=true;const p=reel.play();p&&p.catch(()=>{})}}),{threshold:.6}).observe(reel);
 }
 </script>
-<script src="lab.js?v=2"></script>
+<script src="lab.js?v=3"></script>
 <script src="hero-bg.js?v=3"></script>
 </body>
 </html>

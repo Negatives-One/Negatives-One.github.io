@@ -17,9 +17,9 @@ const D = {
 
   // projects
   'My projects': ['Meus projetos', 'Mis proyectos'],
-  'A cozy noir detective game built on logic puzzles. I worked on porting and development, getting it onto PC, PlayStation 5, Xbox, Switch, iOS and Android.':
-    ['Um jogo de detetive noir e aconchegante, baseado em quebra-cabeças de lógica. Trabalhei no porte e no desenvolvimento, levando o jogo para PC, PlayStation 5, Xbox, Switch, iOS e Android.',
-     'Un juego de detectives noir y acogedor, basado en acertijos de lógica. Trabajé en el port y el desarrollo, llevándolo a PC, PlayStation 5, Xbox, Switch, iOS y Android.'],
+  'A cozy noir detective game built on logic puzzles. I worked on development and porting, getting it onto PC, PlayStation 5, Xbox, Switch, iOS and Android.':
+    ['Um jogo de detetive noir e aconchegante, baseado em quebra-cabeças de lógica. Trabalhei no desenvolvimento e no porte, levando o jogo para PC, PlayStation 5, Xbox, Switch, iOS e Android.',
+     'Un juego de detectives noir y acogedor, basado en acertijos de lógica. Trabajé en el desarrollo y el port, llevándolo a PC, PlayStation 5, Xbox, Switch, iOS y Android.'],
   "A free-to-play jigsaw game with puzzles drawn by real illustrators. I'm part of the development team. It sits at 98% positive reviews on Steam.":
     ['Um jogo de quebra-cabeça gratuito com ilustrações de artistas de verdade. Faço parte da equipe de desenvolvimento. Tem 98% de avaliações positivas na Steam.',
      'Un juego de rompecabezas gratuito con ilustraciones de artistas reales. Formo parte del equipo de desarrollo. Tiene un 98% de reseñas positivas en Steam.'],
