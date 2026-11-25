@@ -1,0 +1,118 @@
+// Tiled Physarum background for the hero: slime-mould agents follow the cursor; their trails light up grid tiles.
+(() => {
+const cv = document.getElementById('hero-bg');
+if (!cv) return;
+const hero = cv.parentElement, ctx = cv.getContext('2d');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const TS = 14, SUB = 2;                       // tile size in CSS px, sim cells per tile side
+const SA = .45, SD = 7, TURN = .7, SPEED = 1, DECAY = .9;
+const LEVELS = 8;
+const COLORS = Array.from({ length: LEVELS }, (_, i) => {
+  const k = (i + 1) / LEVELS;                 // navy → steel blue → glow → pale
+  const r = Math.round(40 + 160 * k ** 1.4), g = Math.round(80 + 160 * k ** 1.1), b = Math.round(120 + 135 * k ** .8);
+  return `rgba(${r},${g},${b},${(.06 + .5 * k).toFixed(3)})`;
+});
+
+let W, H, cols, rows, SW, SH, trail, tmp, agents, mul, gridPat, peak = 1;
+let mx = -1e4, my = -1e4, lastMove = -1e9, visible = true, t = 0;
+
+function size() {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  W = hero.clientWidth; H = hero.clientHeight;
+  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  cols = Math.ceil(W / TS); rows = Math.ceil(H / TS); SW = cols * SUB; SH = rows * SUB;
+  trail = new Float32Array(SW * SH); tmp = new Float32Array(SW * SH);
+  const n = Math.min(3800, Math.round(SW * SH * .2));
+  agents = Array.from({ length: n }, () => ({ x: Math.random() * SW, y: Math.random() * SH, a: Math.random() * 6.283 }));
+  // dim the tiles behind the hero text (centre) so it stays readable
+  mul = new Float32Array(cols * rows);
+  for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+    const dx = (x + .5) / cols - .5, dy = ((y + .5) / rows - .48) * 1.3, d = Math.hypot(dx, dy);
+    mul[y * cols + x] = Math.min(1, .35 + Math.max(0, d - .12) * 2.6);
+  }
+  const p = document.createElement('canvas'); p.width = p.height = TS;
+  const pc = p.getContext('2d'); pc.fillStyle = 'rgba(180,210,230,.045)'; pc.fillRect(0, 0, TS, 1); pc.fillRect(0, 0, 1, TS);
+  gridPat = ctx.createPattern(p, 'repeat');
+}
+
+const sense = (a, o) => {
+  const x = (a.x + Math.cos(a.a + o) * SD) | 0, y = (a.y + Math.sin(a.a + o) * SD) | 0;
+  return x >= 0 && y >= 0 && x < SW && y < SH ? trail[y * SW + x] : -1;
+};
+
+function step() {
+  // the cursor (real or autopilot) keeps dropping food, so the network grows toward it
+  const cx = (mx / TS * SUB) | 0, cy = (my / TS * SUB) | 0;
+  for (let oy = -3; oy <= 3; oy++) for (let ox = -3; ox <= 3; ox++) {
+    if (ox * ox + oy * oy > 9) continue;
+    const X = cx + ox, Y = cy + oy;
+    if (X >= 0 && Y >= 0 && X < SW && Y < SH) trail[Y * SW + X] += 1.2;
+  }
+  for (const a of agents) {
+    if (Math.random() < .002) { a.x = Math.random() * SW; a.y = Math.random() * SH; a.a = Math.random() * 6.283; }
+    const l = sense(a, -SA), f = sense(a, 0), r = sense(a, SA);
+    if (f < l || f < r) a.a += l > r ? -TURN : TURN; else a.a += (Math.random() - .5) * .25;
+    let nx = a.x + Math.cos(a.a) * SPEED, ny = a.y + Math.sin(a.a) * SPEED;
+    if (nx < 0 || ny < 0 || nx >= SW || ny >= SH) { a.a = Math.random() * 6.283; nx = Math.min(SW - 1, Math.max(0, nx)); ny = Math.min(SH - 1, Math.max(0, ny)); }
+    a.x = nx; a.y = ny; trail[(ny | 0) * SW + (nx | 0)] += 1;
+  }
+  // separable 3x3 blur + decay
+  for (let y = 0; y < SH; y++) { const o = y * SW; for (let x = 0; x < SW; x++) tmp[o + x] = (trail[o + Math.max(0, x - 1)] + trail[o + x] + trail[o + Math.min(SW - 1, x + 1)]) / 3; }
+  for (let y = 0; y < SH; y++) { const u = Math.max(0, y - 1) * SW, o = y * SW, d = Math.min(SH - 1, y + 1) * SW; for (let x = 0; x < SW; x++) trail[o + x] = (trail[o + x] * .4 + (tmp[u + x] + tmp[o + x] + tmp[d + x]) / 3 * .6) * DECAY; }
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = gridPat; ctx.fillRect(0, 0, W, H);
+  const buckets = Array.from({ length: LEVELS }, () => []);
+  let max = 0;
+  for (let ty = 0; ty < rows; ty++) for (let tx = 0; tx < cols; tx++) {
+    let s = 0;
+    for (let sy = 0; sy < SUB; sy++) { const o = (ty * SUB + sy) * SW + tx * SUB; for (let sx = 0; sx < SUB; sx++) s += trail[o + sx]; }
+    s /= SUB * SUB; if (s > max) max = s;
+    const v = Math.min(1, Math.sqrt(s / (peak * .7))) * mul[ty * cols + tx];
+    const lv = Math.floor(v * LEVELS) - 1;
+    if (lv >= 0) buckets[lv].push(tx, ty);
+  }
+  peak = peak * .96 + Math.max(.5, max) * .04;
+  for (let l = 0; l < LEVELS; l++) {
+    const b = buckets[l]; if (!b.length) continue;
+    ctx.fillStyle = COLORS[l]; ctx.beginPath();
+    for (let i = 0; i < b.length; i += 2) ctx.rect(b[i] * TS + 1, b[i + 1] * TS + 1, TS - 1, TS - 1);
+    ctx.fill();
+  }
+}
+
+function autopilot() {               // slow drifting point when nobody is steering
+  mx = W * (.5 + .36 * Math.cos(t * .23) * Math.sin(t * .11 + 1));
+  my = H * (.5 + .34 * Math.sin(t * .31));
+}
+
+addEventListener('pointermove', e => {
+  if (e.pointerType === 'touch') return;
+  const r = hero.getBoundingClientRect();
+  if (e.clientY < r.top || e.clientY > r.bottom) return;
+  mx = e.clientX - r.left; my = e.clientY - r.top; lastMove = performance.now();
+}, { passive: true });
+hero.addEventListener('pointerdown', e => {            // a click drops a big burst of food
+  const r = hero.getBoundingClientRect(), cx = ((e.clientX - r.left) / TS * SUB) | 0, cy = ((e.clientY - r.top) / TS * SUB) | 0;
+  for (let oy = -8; oy <= 8; oy++) for (let ox = -8; ox <= 8; ox++) { const X = cx + ox, Y = cy + oy; if (ox * ox + oy * oy <= 64 && X >= 0 && Y >= 0 && X < SW && Y < SH) trail[Y * SW + X] += 12; }
+});
+
+new ResizeObserver(() => { size(); draw(); }).observe(hero);
+new IntersectionObserver(es => es.forEach(e => visible = e.isIntersecting), { threshold: 0 }).observe(hero);
+size();
+if (reduce) { draw(); return; }
+for (let i = 0; i < 240; i++) { t += 1 / 60; autopilot(); step(); }   // start with a network already grown
+let last = 0;
+const loop = now => {
+  requestAnimationFrame(loop);
+  if (!visible || document.hidden || now - last < 31) return;   // ~30 fps is plenty for this motion
+  last = now;
+  t += 1 / 30;
+  if (now - lastMove > 2500) autopilot();
+  step(); draw();
+};
+requestAnimationFrame(loop);
+})();

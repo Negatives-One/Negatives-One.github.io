@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bruno Lima - Portfolio</title>
+<meta name="description" content="Bruno Carvalho Lima — Game Developer portfolio">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: calm, dark, game-studio polish — a faithful re-make of the reference layout.
+   IDEA: a dev's showcase reel; each project is a "build" card that stacks as you scroll.
+   PICTURE: original drawings per project; a live procedural terrain generator as the centrepiece.
+   COLOUR and TYPE: night navy #0f151f, steel-blue glow, sky-blue accent light; Hanken Grotesk.
+   LAYOUT: centred hero, logo strip, sticky stacked cards, bio, skills chips, experience rows, footer. */
+:root{--gap:clamp(72px,10vw,128px);color-scheme:dark;--bg:#0f151f;--ink:#edeef0;--soft:#b3c2cb;--mute:#8a96a3;--line:rgba(209,218,224,.14);--card:#141b26;--glow:#7dcbff}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 "Hanken Grotesk",system-ui,sans-serif;overflow-x:clip;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(40% 50% at 12% 60%,rgba(125,203,255,.13),transparent 70%),radial-gradient(35% 45% at 90% 20%,rgba(125,203,255,.06),transparent 70%)}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.07;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+main,footer{position:relative;z-index:1}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 max(5vw,18px)}
+
+/* nav */
+#top{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .3s,backdrop-filter .3s}
+#top.solid{background:rgba(15,21,31,.7);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.nav{display:flex;align-items:center;justify-content:flex-end;height:76px}
+.links{display:flex;gap:28px;align-items:center;font-weight:500}
+.links a:not(.btn){color:var(--soft);transition:color .2s}.links a:not(.btn):hover{color:#fff}
+.lang{display:flex;gap:2px;margin-left:22px;padding:3px;border:1px solid var(--line);border-radius:999px}
+.lang button{min-width:36px;min-height:32px;padding:0 8px;border:0;border-radius:999px;background:none;color:var(--mute);font:600 12.5px/1 inherit;font-family:inherit;cursor:pointer}
+.lang button:hover{color:#fff}
+.lang button[aria-pressed=true]{background:rgba(255,255,255,.12);color:#fff}
+.burger{display:none;width:44px;height:44px;border:0;background:none;color:#fff;cursor:pointer}
+.burger span{display:block;width:20px;height:2px;background:currentColor;margin:4px auto;border-radius:2px;transition:.3s}
+.menu-open .burger span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.menu-open .burger span:nth-child(2){opacity:0}
+.menu-open .burger span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 22px;border-radius:999px;font:500 15px/1 inherit;font-family:inherit;cursor:pointer;transition:transform .2s,box-shadow .3s,background .2s;border:1px solid var(--line);color:#fff;background:transparent}
+.btn:hover{transform:translateY(-2px)}
+.btn.dark{background:#000;border-color:#000;box-shadow:0 8px 30px -6px rgba(125,203,255,.55),0 0 0 1px rgba(255,255,255,.06) inset}
+.btn.dark:hover{box-shadow:0 10px 40px -4px rgba(125,203,255,.8)}
+.btn.ghost{background:rgba(255,255,255,.03)}
+.btn:focus-visible,a:focus-visible,button:focus-visible{outline:2px solid var(--glow);outline-offset:3px}
+
+/* hero */
+.hero{min-height:calc(100svh - 150px);display:grid;place-items:center;text-align:center;padding:120px 0 48px;
+  background:radial-gradient(60% 55% at 50% 38%,#344354 0%,rgba(52,67,84,.35) 55%,transparent 80%)}
+.hero{position:relative;overflow:hidden}
+#hero-bg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
+.hero>.wrap{position:relative;z-index:1}
+.avatar{width:96px;height:96px;margin:0 auto 34px;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 35% 30%,#d1dae0,#5a6165);box-shadow:0 20px 50px -10px rgba(0,0,0,.7),0 0 0 4px rgba(255,255,255,.06)}
+.avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.avatar b{font:600 34px/1 "Hanken Grotesk",sans-serif;color:#0f151f;letter-spacing:-.02em}
+h1{margin:0;font-weight:500;font-size:clamp(36px,6vw,52px);line-height:1.05;letter-spacing:-.02em;
+  background:radial-gradient(90% 300% at 40% 20%,#fff 0%,rgba(255,255,255,.4) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.role{margin:14px 0 0;font-size:18px;color:var(--soft);max-width:30em;margin-inline:auto;text-wrap:balance}
+.cta{display:flex;gap:12px;justify-content:center;margin-top:30px;flex-wrap:wrap}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .9s ease,transform .9s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* tool strip */
+.strip{padding:0 max(5vw,18px)}
+.track{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(14px,3vw,36px)}
+.tile{flex:none;width:68px;height:68px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(160deg,#2a2e33,#18181a);
+  border:1px solid rgba(255,255,255,.08);box-shadow:0 8px 20px -8px #000,inset 0 1px 0 rgba(255,255,255,.06);color:#e6e6e6;transition:color .25s,border-color .25s}
+.tile svg{width:34px;height:34px;fill:currentColor}
+.tile:hover{color:#fff;border-color:rgba(125,203,255,.45)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* projects */
+.sec-title{font-weight:500;font-size:clamp(28px,4vw,36px);line-height:1.1;margin:0 0 clamp(24px,3vw,32px);letter-spacing:-.01em}
+.cards{padding-top:var(--gap)}
+#work .card:last-child{margin-bottom:0}
+.card{position:sticky;top:calc(96px + var(--i)*16px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(20px,4vw,48px);align-items:center;
+  min-height:420px;margin-bottom:56px;padding:clamp(22px,4vw,44px);border-radius:28px;border:1px solid rgba(255,255,255,.07);
+  background:radial-gradient(80% 120% at 15% 0%,var(--tint),transparent 70%),linear-gradient(180deg,#151c28,#0f141c);box-shadow:0 -20px 60px -20px rgba(0,0,0,.8)}
+.card h3{margin:0 0 14px;font-weight:500;font-size:clamp(22px,2.6vw,26px);line-height:1.2;text-wrap:balance}
+.card p{margin:0 0 12px;color:var(--soft);font-size:16px}
+.card .meta{color:var(--mute);font-size:14px}
+.card .btn.more{margin-top:12px}
+.card .btn{margin-top:22px;font-size:14px;min-height:40px;padding:0 18px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tags span{font-size:12.5px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.06);color:var(--soft);white-space:nowrap}
+.stores{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.stores a{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 16px;border-radius:999px;font-size:14px;font-weight:500;white-space:nowrap;
+  border:1px solid var(--line);background:rgba(255,255,255,.03);transition:transform .2s,border-color .2s,background .2s}
+.stores a::after{content:"↗";font-size:12px;color:var(--mute);transition:color .2s}
+.stores a:hover{transform:translateY(-2px);border-color:rgba(125,203,255,.55);background:rgba(125,203,255,.08)}
+.stores a:hover::after{color:var(--glow)}
+.vis{position:relative;aspect-ratio:16/11;border-radius:18px;overflow:hidden;background:#0b1018;border:1px solid rgba(255,255,255,.06)}
+.vis img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .7s ease}
+.card:hover .vis img{transform:scale(1.04)}
+.vis svg,.vis canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.vis canvas{image-rendering:pixelated}
+.seed{position:absolute;left:12px;bottom:10px;font:500 11.5px/1 "JetBrains Mono",monospace;color:#d1dae0;background:rgba(0,0,0,.55);padding:6px 8px;border-radius:6px}
+
+/* bio */
+.bio{padding-block:var(--gap);text-align:center}
+.bio p{max-width:760px;margin:0 auto;font-size:clamp(19px,2.4vw,24px);line-height:2.1;text-wrap:balance}
+.w{opacity:.18;transition:opacity .4s}
+.w.on{opacity:1}
+.nw{white-space:nowrap}
+.pill{display:inline-block;padding:2px 14px;margin:0 2px;line-height:1.5;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:#000;white-space:nowrap}
+
+/* skills */
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:10px;font-size:14.5px;color:var(--ink);background:rgba(24,24,26,.85);border:1px solid rgba(255,255,255,.09);transition:border-color .2s,transform .2s}
+.chip svg{width:16px;height:16px;fill:currentColor;flex:none;opacity:.9}
+.chip:hover{border-color:rgba(125,203,255,.5);transform:translateY(-2px)}
+.chip.alt{background:rgba(52,67,84,.55)}
+
+/* experience */
+.xp{padding-top:var(--gap)}
+.bio+.xp{padding-top:0}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 24px;padding:18px 0;border-bottom:1px solid var(--line)}
+.row h4{margin:0 0 2px;font-weight:500;font-size:clamp(17px,2vw,20px)}
+.row .co{text-align:right;font-size:clamp(17px,2vw,20px);font-weight:500}
+.row .when,.row .what{font-size:14px;color:var(--mute)}
+.row .when{text-align:right;white-space:nowrap}
+.now{color:var(--glow)!important}
+.edu-sec{padding-top:clamp(56px,7vw,88px)}
+#skills{padding-top:var(--gap)}
+footer{padding:var(--gap) 0 40px;font-size:13px;color:var(--soft)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer nav{display:flex;flex-wrap:wrap;gap:10px 22px}footer a:hover{color:#fff}
+
+.meta a{color:var(--soft);text-decoration:underline;text-underline-offset:3px}
+.vis video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.slides img{opacity:0;animation:slideb 12s infinite}
+.slides img:nth-child(1){opacity:1;animation-name:slidea}
+.slides img:nth-child(2){animation-delay:4s}.slides img:nth-child(3){animation-delay:8s}
+@keyframes slidea{0%,30%{opacity:1}36%,94%{opacity:0}100%{opacity:1}}
+@keyframes slideb{0%{opacity:0}4%,30%{opacity:1}36%,100%{opacity:0}}
+
+/* showreel */
+.reel{padding-top:clamp(40px,6vw,64px)}
+.reel-frame{position:relative;aspect-ratio:16/9;border-radius:20px;overflow:hidden;background:#000;border:1px solid rgba(255,255,255,.08)}
+.reel-frame video{position:absolute;inset:0;width:100%;height:100%;display:block;background:#000}
+.cap{margin:12px 2px 0;font-size:14px;color:var(--mute)}
+
+/* lab */
+.lab-sec{padding-top:var(--gap)}
+.lead{max-width:62ch;margin:-8px 0 24px;color:var(--soft)}
+.lab-canvas-wrap{background:#0b1a1a;box-shadow:0 24px 60px -30px rgba(0,0,0,.9)}
+.lab-tag{position:absolute;left:12px;top:12px;font:500 12.5px/1 "JetBrains Mono",monospace;color:#eaf6f8;background:rgba(0,0,0,.55);padding:7px 10px;border-radius:8px;white-space:pre}
+.lab-bar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 20px;margin-top:16px}
+.stages{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.stages button{min-height:38px;padding:0 14px;border-radius:10px;border:1px solid rgba(255,255,255,.09);background:rgba(24,24,26,.85);color:var(--soft);font:500 14px/1 inherit;font-family:inherit;cursor:pointer;transition:border-color .2s,color .2s}
+.stages button:hover{border-color:rgba(125,203,255,.5);color:#fff}
+.stages button.on{color:#fff;border-color:rgba(255,255,255,.45);background:rgba(52,67,84,.7)}
+.lab-ctrl{display:flex;gap:10px}
+.lab-ctrl .btn{min-height:40px;padding:0 18px;font-size:14px}
+.lab-info{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:20px 32px;align-items:start;margin-top:24px}
+.lab-title{margin:4px 0 8px;font-weight:500;font-size:20px}
+.lab-desc{margin:0;color:var(--soft);max-width:48ch}
+.lab-info .code{min-height:9.5em}
+
+/* code */
+.code-toggle{margin-top:14px}
+.code-toggle summary{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);cursor:pointer;font-size:14px;color:var(--soft);list-style:none;transition:border-color .2s,color .2s}
+.code-toggle summary::-webkit-details-marker{display:none}
+.code-toggle summary::after{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .2s}
+.code-toggle[open] summary::after{transform:translateY(1px) rotate(-135deg)}
+.code-toggle summary:hover{color:#fff;border-color:rgba(255,255,255,.3)}
+.code-toggle .codebox{margin-top:12px}
+.codebox{border-radius:12px;overflow:hidden;background:#0b1017;border:1px solid rgba(255,255,255,.08)}
+.codebar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 6px 0 14px;height:36px;background:#121923;border-bottom:1px solid rgba(255,255,255,.06);font:500 12px/1 "JetBrains Mono",monospace;color:var(--mute)}
+.codebar span::before{content:"";display:inline-block;width:8px;height:8px;border-radius:2px;background:#7dcbff;opacity:.6;margin-right:8px;vertical-align:0}
+.copy{min-height:28px;padding:0 10px;border-radius:7px;border:1px solid transparent;background:none;color:var(--soft);font:500 12px/1 "Hanken Grotesk",sans-serif;cursor:pointer}
+.copy:hover{border-color:rgba(255,255,255,.15);color:#fff}
+.code{margin:0;padding:14px 16px;font:500 13px/1.65 "JetBrains Mono",monospace;color:#d4dde3;overflow-x:auto;white-space:pre;tab-size:4}
+.code .k{color:#8fb8ff}.code .t{color:#7fd6c2}.code .s{color:#e6c07b}.code .n{color:#f2a272}.code .c{color:#6b7a86;font-style:italic}.code .p{color:#c9a0dc}.code .m{color:#e9eef2}
+
+/* notes */
+.notes{padding-top:var(--gap)}
+.note{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:clamp(20px,4vw,44px);padding:28px 0 32px;border-bottom:1px solid var(--line)}
+.note:first-of-type{padding-top:4px}
+.note-side{position:sticky;top:96px;align-self:start}
+.note-side img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:14px;border:1px solid rgba(255,255,255,.08)}
+.note-meta{margin:12px 0 10px;font-size:14px;line-height:1.5;color:var(--mute)}
+.note-tags{display:flex;flex-wrap:wrap;gap:6px}
+.note-tags span{padding:5px 10px;border-radius:8px;font-size:12.5px;color:var(--soft);background:rgba(24,24,26,.85);border:1px solid rgba(255,255,255,.09);white-space:nowrap}
+.note-body{max-width:68ch}
+.note h3{margin:0 0 12px;font-weight:500;font-size:clamp(20px,2.4vw,24px);line-height:1.25}
+.note p{margin:0 0 12px;color:var(--soft)}
+.note .note-out{color:var(--ink);padding-left:14px;border-left:2px solid rgba(255,255,255,.25)}
+
+/* ai */
+.ai{padding-top:var(--gap)}
+.row .co.tools{font-size:14.5px;font-weight:400;color:var(--mute)}
+
+@media(max-width:820px){.lab-info{grid-template-columns:1fr}.note{grid-template-columns:1fr}.note-side{position:static;display:grid;grid-template-columns:120px minmax(0,1fr);gap:4px 14px;align-items:start}.note-side img{grid-row:span 2}.note-meta{margin:0 0 6px}}
+@media(max-width:760px){
+  .links{position:fixed;top:76px;left:12px;right:12px;flex-direction:column;align-items:stretch;gap:0;padding:8px;border-radius:18px;background:rgba(20,27,38,.96);border:1px solid var(--line);
+    opacity:0;pointer-events:none;transform:translateY(-8px);transition:.25s}
+  .links a{padding:14px 16px}.links .btn{margin-top:6px}
+  .menu-open .links{opacity:1;pointer-events:auto;transform:none}
+  .burger{display:block}
+  .lang{margin:0 6px 0 0}
+  .card{position:relative;top:0;grid-template-columns:1fr;min-height:0;margin-bottom:24px}
+  .card .vis{order:-1}
+  .row{grid-template-columns:1fr;gap:2px}.row .co,.row .when{text-align:left}.row .co{color:var(--soft);font-size:16px}
+  .card{padding:16px 16px 24px;border-radius:22px}.card>div:not(.vis){padding:0 6px}
+  .hero{min-height:0;padding:132px 0 56px}
+  .track{max-width:290px;margin:0 auto}
+  .tile{width:58px;height:58px;border-radius:12px}.tile svg{width:28px;height:28px}
+  footer .wrap{flex-direction:column}
+  .lab-bar{display:block}.stages{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1*max(5vw,18px)) 12px;padding:0 max(5vw,18px)}.stages::-webkit-scrollbar{display:none}.stages li{flex:none}
+  .code{font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}.w{opacity:1}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-csharp" viewBox="0 0 128 128"><path d="M117.5 33.5l.3-.2c-.6-1.1-1.5-2.1-2.4-2.6L67.1 2.9c-.8-.5-1.9-.7-3.1-.7-1.2 0-2.3.3-3.1.7l-48 27.9c-1.7 1-2.9 3.5-2.9 5.4v55.7c0 1.1.2 2.3.9 3.4l-.2.1c.5.8 1.2 1.5 1.9 1.9l48.2 27.9c.8.5 1.9.7 3.1.7 1.2 0 2.3-.3 3.1-.7l48-27.9c1.7-1 2.9-3.5 2.9-5.4V36.1c.1-.8 0-1.7-.4-2.6zm-53.5 70c-21.8 0-39.5-17.7-39.5-39.5S42.2 24.5 64 24.5c14.7 0 27.5 8.1 34.3 20l-13 7.5C81.1 44.5 73.1 39.5 64 39.5c-13.5 0-24.5 11-24.5 24.5s11 24.5 24.5 24.5c9.1 0 17.1-5 21.3-12.4l12.9 7.6c-6.8 11.8-19.6 19.8-34.2 19.8zM115 62h-3.2l-.9 4h4.1v5h-5l-1.2 6h-4.9l1.2-6h-3.8l-1.2 6h-4.8l1.2-6H94v-5h3.5l.9-4H94v-5h5.3l1.2-6h4.9l-1.2 6h3.8l1.2-6h4.8l-1.2 6h2.2v5zm-12.7 4h3.8l.9-4h-3.8z"/></symbol><symbol id="i-unity" viewBox="0 0 24 24"><path d="m12.9288 4.2939 3.7997 2.1929c.1366.077.1415.2905 0 .3675l-4.515 2.6076a.4192.4192 0 0 1-.4246 0L7.274 6.8543c-.139-.0745-.1415-.293 0-.3675l3.7972-2.193V0L1.3758 5.5977V16.793l3.7177-2.1456v-4.3858c-.0025-.1565.1813-.2682.318-.1838l4.5148 2.6076a.4252.4252 0 0 1 .2136.3676v5.2127c.0025.1565-.1813.2682-.3179.1838l-3.7996-2.1929-3.7178 2.1457L12 24l9.6954-5.5977-3.7178-2.1457-3.7996 2.1929c-.1341.082-.3229-.0248-.3179-.1838V13.053c0-.1565.087-.2956.2136-.3676l4.5149-2.6076c.134-.082.3228.0224.3179.1838v4.3858l3.7177 2.1456V5.5977L12.9288 0Z"/></symbol><symbol id="i-godot" viewBox="0 0 24 24"><path d="M9.5598.683c-1.096.244-2.1812.5831-3.1983 1.0951.023.8981.081 1.7582.199 2.6323-.395.253-.81.47-1.178.766-.375.288-.7581.564-1.0971.9011-.6781-.448-1.3962-.869-2.1352-1.2411C1.3532 5.6934.608 6.6186 0 7.6546c.458.7411.936 1.4352 1.4521 2.0942h.014v6.3565c.012 0 .023 0 .035.003l3.8963.376c.204.02.364.184.378.3891l.12 1.7201 3.3994.242.234-1.587c.03-.206.207-.358.415-.358h4.1114c.208 0 .385.152.415.358l.234 1.587 3.3993-.242.12-1.72a.4196.4196 0 01.378-.3891l3.8954-.376c.012 0 .023-.003.035-.003v-.5071h.002V9.7498h.014c.516-.659.994-1.3531 1.4521-2.0942-.608-1.036-1.3541-1.9611-2.1512-2.8192-.739.372-1.4571.793-2.1352 1.2411-.339-.337-.721-.613-1.096-.901-.369-.296-.7841-.5131-1.1781-.7661.117-.8741.175-1.7342.199-2.6323-1.0171-.512-2.1012-.851-3.1983-1.095-.438.736-.838 1.533-1.1871 2.3121-.414-.069-.829-.094-1.2461-.099h-.016c-.417.005-.832.03-1.2461.099-.349-.779-.749-1.576-1.1881-2.3121l.001-.001zM6.4765 9.9889c1.2971 0 2.3492 1.0511 2.3492 2.3482s-1.052 2.3482-2.3492 2.3482c-1.296 0-2.3482-1.051-2.3482-2.3482 0-1.297 1.0511-2.3482 2.3482-2.3482zm11.049 0c1.296 0 2.3482 1.0511 2.3482 2.3482s-1.0511 2.3482-2.3482 2.3482-2.3492-1.051-2.3492-2.3482c0-1.297 1.051-2.3482 2.3492-2.3482zm-10.824.9301c-.861 0-1.559.698-1.559 1.5591s.698 1.5582 1.559 1.5582c.8611 0 1.5592-.698 1.5592-1.5582 0-.86-.697-1.559-1.5591-1.559zm10.598 0c-.8611 0-1.5582.698-1.5582 1.5591s.697 1.5582 1.5581 1.5582c.8611 0 1.5592-.698 1.5592-1.5582 0-.86-.697-1.559-1.5592-1.559zm-5.2985.453c.417 0 .757.308.757.6871v2.1622c0 .379-.339.687-.757.687s-.756-.308-.756-.687V12.059c0-.379.339-.687.756-.687zM1.4601 16.9464c.002.377.006.789.006.871 0 3.7014 4.6944 5.4795 10.5269 5.5005h.014c5.8325-.02 10.5259-1.7991 10.5259-5.5004 0-.084.005-.495.007-.871l-3.5023.338-.121 1.729a.421.421 0 01-.389.3901l-4.1814.296a.4203.4203 0 01-.415-.358l-.238-1.6141h-3.3863l-.238 1.6141a.4192.4192 0 01-.4451.357l-4.1513-.296c-.208-.015-.375-.181-.389-.389l-.12-1.7292-3.5044-.337z"/></symbol><symbol id="i-unreal" viewBox="0 0 24 24"><path d="M12 0a12 12 0 1012 12A12 12 0 0012 0zm0 23.52A11.52 11.52 0 1123.52 12 11.52 11.52 0 0112 23.52zm7.13-9.791c-.206.997-1.126 3.557-4.06 4.942l-1.179-1.325-1.988 2a7.338 7.338 0 01-5.804-2.978 2.859 2.859 0 00.65.123c.326.006.678-.114.678-.66v-5.394a.89.89 0 00-1.116-.89c-.92.212-1.656 2.509-1.656 2.509a7.304 7.304 0 012.528-5.597 7.408 7.408 0 013.73-1.721c-1.006.573-1.57 1.507-1.57 2.29 0 1.262.76 1.109.984.923v7.28a1.157 1.157 0 00.148.256 1.075 1.075 0 00.88.445c.76 0 1.747-.868 1.747-.868V9.172c0-.6-.452-1.324-.905-1.572 0 0 .838-.149 1.484.346a5.537 5.537 0 01.387-.425c1.508-1.48 2.929-1.902 4.112-2.112 0 0-2.151 1.69-2.151 3.96 0 1.687.043 5.801.043 5.801.799.771 1.986-.342 3.059-1.441Z"/></symbol><symbol id="i-git" viewBox="0 0 24 24"><path d="M13.09 23.549a1.54 1.54 0 0 1-2.18 0L.451 13.089a1.54 1.54 0 0 1 0-2.179l7.191-7.19 2.733 2.733a1.85 1.85 0 0 0 .964 2.326v6.66a1.849 1.849 0 1 0 1.54 0V8.957l2.508 2.508a1.85 1.85 0 1 0 1.09-1.09l-2.634-2.634a1.85 1.85 0 0 0-2.378-2.377L8.73 2.63 10.91.451a1.54 1.54 0 0 1 2.179 0l10.459 10.46a1.54 1.54 0 0 1 0 2.179z"/></symbol><symbol id="i-python" viewBox="0 0 24 24"><path d="M11.858 0c-.978.005-1.913.088-2.736.234C6.7.662 6.26 1.558 6.26 3.21v2.182h5.725v.727H4.111c-1.664 0-3.121 1-3.577 2.903-.526 2.181-.549 3.542 0 5.82.407 1.694 1.379 2.902 3.043 2.902h1.969v-2.616c0-1.89 1.635-3.557 3.576-3.557h5.72c1.591 0 2.862-1.31 2.862-2.91v-5.45c0-1.553-1.309-2.718-2.863-2.977A18 18 0 0 0 11.858 0M8.762 1.755c.591 0 1.074.491 1.074 1.095 0 .601-.483 1.087-1.074 1.087A1.08 1.08 0 0 1 7.688 2.85c0-.604.48-1.095 1.074-1.095m9.656 4.364v2.543c0 1.971-1.671 3.63-3.577 3.63H9.122c-1.566 0-2.862 1.34-2.862 2.91v5.452c0 1.551 1.349 2.464 2.862 2.91 1.813.532 3.55.628 5.72 0 1.44-.418 2.862-1.258 2.862-2.91V18.47h-5.719v-.727h8.582c1.664 0 2.284-1.16 2.862-2.903.598-1.793.573-3.518 0-5.819-.41-1.656-1.196-2.903-2.862-2.903zm-3.216 13.807a1.08 1.08 0 0 1 1.074 1.088c0 .604-.48 1.094-1.074 1.094-.592 0-1.075-.49-1.075-1.094 0-.601.483-1.088 1.075-1.088"/></symbol><symbol id="i-js" viewBox="0 0 24 24"><path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z"/></symbol><symbol id="i-github" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></symbol><symbol id="i-itch" viewBox="0 0 24 24"><path d="M3.13 1.338C2.08 1.96.02 4.328 0 4.95v1.03c0 1.303 1.22 2.45 2.325 2.45 1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.07 2.41 2.4 2.41 1.328 0 2.362-1.102 2.362-2.41 0 1.308 1.137 2.41 2.466 2.41h.024c1.33 0 2.466-1.102 2.466-2.41 0 1.308 1.034 2.41 2.363 2.41 1.33 0 2.4-1.102 2.4-2.41 0 1.308 1.106 2.41 2.435 2.41C22.78 8.43 24 7.282 24 5.98V4.95c-.02-.62-2.082-2.99-3.13-3.612-3.253-.114-5.508-.134-8.87-.133-3.362 0-7.945.053-8.87.133zm6.376 6.477a2.74 2.74 0 0 1-.468.602c-.5.49-1.19.795-1.947.795a2.786 2.786 0 0 1-1.95-.795c-.182-.178-.32-.37-.446-.59-.127.222-.303.412-.486.59a2.788 2.788 0 0 1-1.95.795c-.092 0-.187-.025-.264-.052-.107 1.113-.152 2.176-.168 2.95v.005l-.006 1.167c.02 2.334-.23 7.564 1.03 8.85 1.952.454 5.545.662 9.15.663 3.605 0 7.198-.21 9.15-.664 1.26-1.284 1.01-6.514 1.03-8.848l-.006-1.167v-.004c-.016-.775-.06-1.838-.168-2.95-.077.026-.172.052-.263.052a2.788 2.788 0 0 1-1.95-.795c-.184-.178-.36-.368-.486-.59-.127.22-.265.412-.447.59a2.786 2.786 0 0 1-1.95.794c-.76 0-1.446-.303-1.948-.793a2.74 2.74 0 0 1-.468-.602 2.738 2.738 0 0 1-.463.602 2.787 2.787 0 0 1-1.95.794h-.16a2.787 2.787 0 0 1-1.95-.793 2.738 2.738 0 0 1-.464-.602zm-2.004 2.59v.002c.795.002 1.5 0 2.373.953.687-.072 1.406-.108 2.125-.107.72 0 1.438.035 2.125.107.873-.953 1.578-.95 2.372-.953.376 0 1.876 0 2.92 2.934l1.123 4.028c.832 2.995-.266 3.068-1.636 3.07-2.03-.075-3.156-1.55-3.156-3.025-1.124.184-2.436.276-3.748.277-1.312 0-2.624-.093-3.748-.277 0 1.475-1.125 2.95-3.156 3.026-1.37-.004-2.468-.077-1.636-3.072l1.122-4.027c1.045-2.934 2.545-2.934 2.92-2.934zM12 12.714c-.002.002-2.14 1.964-2.523 2.662l1.4-.056v1.22c0 .056.56.033 1.123.007.562.026 1.124.05 1.124-.008v-1.22l1.4.055C14.138 14.677 12 12.713 12 12.713z"/></symbol></svg>
+<header id="top">
+  <div class="wrap nav">
+    
+    <nav class="links" id="links">
+      <a href="#work">Work</a>
+      <a href="#lab">Lab</a>
+      <a href="#experience">Experience</a>
+      <a class="btn dark" href="mailto:brunoorvalho@gmail.com">Get in Touch</a>
+    </nav>
+    <div class="lang" role="group" aria-label="Language"><button type="button" data-l="en" lang="en">EN</button><button type="button" data-l="pt" lang="pt-BR">PT</button><button type="button" data-l="es" lang="es">ES</button></div>
+    <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <canvas id="hero-bg" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div class="avatar reveal"><img src="img/avatar.jpg" alt="Bruno Lima" width="96" height="96"></div>
+      <h1 class="reveal">Bruno Lima</h1>
+      <p class="role reveal">Game developer from Fortaleza, building multiplayer, procedural and multi-platform games in Unity &amp; C#.</p>
+      <div class="cta reveal">
+        <a class="btn dark" href="mailto:brunoorvalho@gmail.com">Let's talk</a>
+        <a class="btn ghost" href="#reel">Showreel</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="strip" aria-label="Tools"><div class="track" id="track"></div></div>
+
+  <section id="reel" class="wrap reel">
+    <div class="reel-frame">
+      <video id="reel-video" controls muted playsinline preload="metadata" poster="img/showreel-poster.jpg">
+        <source src="video/showreel.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="cap">Showreel 2026. Footage from the official trailers of games I worked on, plus the terrain lab.</p>
+  </section>
+
+  <section id="work" class="wrap cards">
+    <h2 class="sec-title">My projects</h2>
+
+    <article class="card" style="--i:0;--tint:rgba(186,138,214,.25)">
+      <div>
+        <h3>Little Sim World</h3>
+        <p>A cozy 2D life sim. I designed and built the peer-to-peer multiplayer with Netcode for GameObjects, from syncing gameplay to the UI, HUD and animations.</p>
+        <p class="meta">Blue Gravity Studios · Unity · C# · 2024–2025</p>
+        <div class="stores"><a href="https://store.steampowered.com/app/1429880/">Steam</a><a href="https://negative-one.itch.io/little-sim-world">itch.io</a></div>
+        <a class="btn more" href="#notes">How the multiplayer works</a>
+      </div>
+      <div class="vis"><video class="clip" muted loop playsinline preload="none" poster="img/little-sim-world.jpg" aria-label="Little Sim World gameplay: several players together in town"><source src="video/little-sim-world.mp4" type="video/mp4"></video></div>
+    </article>
+
+    <article class="card" style="--i:1;--tint:rgba(15,100,153,.35)">
+      <div>
+        <h3>Case Solved: The London Files</h3>
+        <p>A cozy noir detective game built on logic puzzles. I worked on porting and development, getting it onto PC, PlayStation 5, Xbox, Switch, iOS and Android.</p>
+        <p class="meta">Minimol Games · Unity · C# · 2026</p>
+        <div class="stores">
+          <a href="https://store.steampowered.com/app/4127360/">Steam</a>
+          <a href="https://store.playstation.com/en-us/concept/10019387">PlayStation 5</a>
+          <a href="https://www.xbox.com/en-US/games/store/case-solved-the-london-files/9NN7208WF2BC">Xbox</a>
+          <a href="https://www.nintendo.com/us/store/products/case-solved-the-london-files-switch/">Nintendo Switch</a>
+          <a href="https://apps.apple.com/app/id6769660234">App Store</a>
+          <a href="https://play.google.com/store/apps/details?id=com.MinimolGames.CaseSolved">Google Play</a>
+        </div>
+      </div>
+      <div class="vis"><video class="clip" muted loop playsinline preload="none" poster="img/case-solved.jpg" aria-label="Case Solved gameplay: filling in the deduction board"><source src="video/case-solved.mp4" type="video/mp4"></video></div>
+    </article>
+
+    <article class="card" style="--i:2;--tint:rgba(42,150,214,.28)">
+      <div>
+        <h3>Puzzle Gallery: Jigsaw Art Collection</h3>
+        <p>A free-to-play jigsaw game with puzzles drawn by real illustrators. I'm part of the development team. It sits at 98% positive reviews on Steam.</p>
+        <p class="meta">Minimol Games · Unity · C# · 2025</p>
+        <div class="stores"><a href="https://store.steampowered.com/app/3979440/">Steam</a></div>
+      </div>
+      <div class="vis"><video class="clip" muted loop playsinline preload="none" poster="img/puzzle-gallery.jpg" aria-label="Puzzle Gallery gameplay: assembling a jigsaw"><source src="video/puzzle-gallery.mp4" type="video/mp4"></video></div>
+    </article>
+
+    <article class="card" style="--i:3;--tint:rgba(130,201,94,.22)">
+      <div>
+        <h3>2D survival crafting game</h3>
+        <p>Built on a custom C# engine. I made the terrain generation (Perlin noise, Physarum, Perlin worms, BFS) and worked on core engine features. The game is under NDA, so I rebuilt the techniques in the lab below.</p>
+        <p class="meta">iOSYS / Skycoin · C# · 2025–2026</p>
+        <a class="btn" href="#lab">Open the lab</a>
+      </div>
+      <div class="vis"><canvas id="terrain" aria-label="Live procedural terrain preview"></canvas><span class="seed" id="seed"></span></div>
+    </article>
+
+    <article class="card" style="--i:4;--tint:rgba(212,135,64,.22)">
+      <div>
+        <h3>Magic Land</h3>
+        <p>An app that turns kids' book drawings into a world they can play in. I worked on LiveOps, updates and production fixes, mini games, in-game video streaming and island building. 50K+ downloads on Google Play.</p>
+        <p class="meta">Estante Mágica · Unity · C# · 2023–2024</p>
+        <div class="stores">
+          <a href="https://play.google.com/store/apps/details?id=com.EstanteMagica.MagicLand">Google Play</a>
+          <a href="https://apps.apple.com/app/magic-land/id1586345593">App Store</a>
+        </div>
+      </div>
+      <div class="vis slides" aria-label="Magic Land screenshots">
+        <img src="img/magic-land.jpg" alt="Magic Land: kids' book drawings turned into a world" loading="lazy">
+        <img src="img/magic-land-2.jpg" alt="Magic Land: mini games and ranking" loading="lazy">
+        <img src="img/magic-land-3.jpg" alt="Magic Land: visiting friends' worlds" loading="lazy">
+      </div>
+    </article>
+
+    <article class="card" style="--i:5;--tint:rgba(125,203,255,.2)">
+      <div>
+        <h3>Vertical slices</h3>
+        <p>Vertical slices for pitching and internal validation, and web and cloud gaming projects with Piepacker / Jam.gg.</p>
+        <p class="meta">Gameplan · Unity · C# · 2022–2023</p>
+        <a class="btn" href="https://linktr.ee/NegativeOn3">Full portfolio</a>
+      </div>
+      <div class="vis" id="v-slices"></div>
+    </article>
+  </section>
+
+  <section id="lab" class="wrap lab-sec">
+    <h2 class="sec-title">Terrain lab</h2>
+    <p class="lead">The survival game I worked on is under NDA, so I rebuilt the same generation steps from scratch to run here in the browser. Press play or pick a step.</p>
+    <div class="vis lab-canvas-wrap"><canvas id="lab-canvas" aria-label="Terrain lab: side-view tile world"></canvas><span class="lab-tag" id="lab-tag" hidden></span><span class="seed" id="lab-seed"></span></div>
+    <div class="lab-bar">
+      <ol id="lab-stages" class="stages"></ol>
+      <div class="lab-ctrl">
+        <button class="btn dark" id="lab-play" type="button">▶ Play</button>
+        <button class="btn" id="lab-new" type="button">New seed</button>
+      </div>
+    </div>
+    <div class="lab-info">
+      <div><h3 id="lab-title" class="lab-title">Terrain generation</h3><p id="lab-desc" class="lab-desc"></p></div>
+      <div class="codebox"><div class="codebar"><span>TerrainGenerator.cs</span><button class="copy" type="button">Copy</button></div><pre class="code"><code id="lab-code"></code></pre></div>
+    </div>
+  </section>
+
+  <section id="notes" class="wrap notes">
+    <h2 class="sec-title">Notes</h2>
+
+    <article class="note">
+      <aside class="note-side">
+        <img src="img/little-sim-world.jpg" alt="Little Sim World gameplay" loading="lazy">
+        <p class="note-meta">Little Sim World<br>Blue Gravity Studios · <span class="nw">2024–2025</span></p>
+        <div class="note-tags"><span>Unity</span><span>Netcode for GameObjects</span><span>P2P</span></div>
+      </aside>
+      <div class="note-body">
+        <h3>Multiplayer in Little Sim World</h3>
+        <p>Little Sim World started out single-player. For multiplayer we went peer to peer: one player hosts and the others join, using Netcode for GameObjects.</p>
+        <p>The host owns the game state. When a player does something, like eating or using an object, their client asks the host through an RPC. The host checks it and updates a NetworkVariable, and every client reacts to that change. The UI, HUD and animations all read from those synced values, so everyone sees the same thing.</p>
+        <p class="note-out">Multiplayer shipped with the game on Steam, which left Early Access in August 2026.</p>
+        <details class="code-toggle"><summary>Show code</summary><div class="codebox"><div class="codebar"><span>Needs.cs</span><button class="copy" type="button">Copy</button></div><pre class="code"><code>// simplified
+public class Needs : NetworkBehaviour {
+    public NetworkVariable&lt;float&gt; Hunger = new(1f,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server);
+
+    [ServerRpc(RequireOwnership = false)]
+    void EatServerRpc(ulong itemId) {
+        if (!inventory.TryConsume(itemId)) return;
+        Hunger.Value = Mathf.Min(1f, Hunger.Value + .3f);
+    }
+
+    public override void OnNetworkSpawn() =&gt;
+        Hunger.OnValueChanged += (_, v) =&gt; hud.SetHunger(v);
+}</code></pre></div></details>
+      </div>
+    </article>
+
+    <article class="note">
+      <aside class="note-side">
+        <img src="img/case-solved.jpg" alt="Case Solved: The London Files gameplay" loading="lazy">
+        <p class="note-meta">Case Solved: The London Files<br>Minimol Games · 2026</p>
+        <div class="note-tags"><span>Unity</span><span>Consoles</span><span>Mobile</span></div>
+      </aside>
+      <div class="note-body">
+        <h3>Porting Case Solved to six platforms</h3>
+        <p>Case Solved launched on Steam, PS5, Xbox Series X|S, Switch and Switch 2, iOS and Android from one Unity project.</p>
+        <p>Most of the work was keeping platform differences out of the game code. Saves, achievements and store features sit behind one interface with a different implementation per platform, picked at build time. Input prompts change with the device, and the UI had to hold up on a TV, a Switch in handheld mode and a phone.</p>
+        <p class="note-out">It launched on all six storefronts in July 2026, including Google Play Pass.</p>
+        <details class="code-toggle"><summary>Show code</summary><div class="codebox"><div class="codebar"><span>Platform.cs</span><button class="copy" type="button">Copy</button></div><pre class="code"><code>// simplified
+public interface IPlatformServices {
+    Task SaveAsync(string slot, byte[] data);
+    void UnlockAchievement(string id);
+}
+
+public static class Platform {
+    public static readonly IPlatformServices Services =
+#if UNITY_PS5
+        new PS5Services();
+#elif UNITY_SWITCH
+        new SwitchServices();
+#elif UNITY_GAMECORE
+        new XboxServices();
+#elif UNITY_IOS || UNITY_ANDROID
+        new MobileServices();
+#else
+        new SteamServices();
+#endif
+}</code></pre></div></details>
+      </div>
+    </article>
+  </section>
+
+  <section class="bio wrap">
+    <p id="bio">Game developer with <span class="pill">4+ years</span> of industry experience, building with <span class="pill">Unity &amp; C#</span>. Expertise spans <span class="pill">multiplayer</span> and <span class="pill">procedural generation</span>, shipping on Steam, mobile and consoles. Currently works as <span class="pill">Game Developer</span> at Minimol Games.</p>
+  </section>
+
+  <section id="experience" class="wrap xp">
+    <h2 class="sec-title">Experience</h2>
+    <div id="rows"></div>
+  </section>
+
+  <section id="education" class="wrap edu-sec">
+    <h2 class="sec-title">Education</h2>
+    <div class="row"><div><h4>B.Sc. Systems and Digital Media</h4></div><div class="co">UFC</div><div class="what">Universidade Federal do Ceará</div><div class="when">2019 – 2026</div></div>
+  </section>
+
+  <section id="skills" class="wrap">
+    <h2 class="sec-title">Skills</h2>
+    <div class="chips" id="chips"></div>
+  </section>
+
+  <section id="ai" class="wrap ai">
+    <h2 class="sec-title">AI in my workflow</h2>
+    <p class="lead">I can work with AI tools whenever a project needs it or a team asks for it, from an assistant in the editor to an orchestrated pipeline. Either way, what ships goes through the same process as any other code: version control, review and testing on the target platform.</p>
+    <div class="row"><div><h4>In the editor</h4></div><div class="co tools">Cursor · GitHub Copilot · Codex · Windsurf</div><div class="what">Boilerplate, refactors and first drafts of systems, with every line read and understood before it gets merged.</div></div>
+    <div class="row"><div><h4>Orchestrated pipelines</h4></div><div class="co tools">Agents · CI</div><div class="what">Multi-step pipelines where agents plan, implement, test and review a change in sequence. Each step is checked before the next one runs, and a person approves what gets merged.</div></div>
+    <div class="row"><div><h4>Research and debugging</h4></div><div class="co tools">Claude · Gemini</div><div class="what">Getting up to speed on a new API or SDK, reading crash logs and comparing approaches before picking one.</div></div>
+    <div class="row"><div><h4>Production standards</h4></div><div class="co tools">Git · code review</div><div class="what">Branches and pull requests, code review, profiling before optimising, testing on real devices and consoles, and notes the rest of the team can follow. AI-generated code follows the same rules.</div></div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Bruno Carvalho Lima – 2026 · Fortaleza, Brazil (GMT-3)</span>
+    <nav><a href="https://github.com/Negatives-One">GitHub</a><a href="https://negative-one.itch.io/">itch.io</a><a href="https://linktr.ee/NegativeOn3">Linktree</a><a href="mailto:brunoorvalho@gmail.com">brunoorvalho@gmail.com</a></nav>
+  </div>
+</footer>
+
+<script src="i18n.js"></script>
+<script>
+{
+const $=s=>document.querySelector(s);
+
+// nav
+const hdr=$('#top'),burger=$('#burger');
+addEventListener('scroll',()=>hdr.classList.toggle('solid',scrollY>20),{passive:true});
+burger.addEventListener('click',()=>{const o=document.body.classList.toggle('menu-open');burger.setAttribute('aria-expanded',o)});
+document.querySelectorAll('#links a').forEach(a=>a.addEventListener('click',()=>document.body.classList.remove('menu-open')));
+
+// tool strip
+const tools=[['unity','Unity'],['csharp','C#'],['godot','Godot'],['unreal','Unreal Engine'],['git','Git'],['python','Python'],['js','JavaScript']];
+const tile=t=>`<div class="tile" title="${t[1]}"><svg><use href="#i-${t[0]}"/></svg><span class="sr">${t[1]}</span></div>`;
+$('#track').innerHTML=tools.map(tile).join('');
+
+// skills
+const skills=[['Game Programming'],['C#','csharp'],['Unity Engine','unity'],['Multiplayer / P2P'],['Netcode for GameObjects'],['Procedural Generation'],['Console Porting'],['LiveOps'],['UI & HUD Systems'],['Custom Engines'],['Godot Engine','godot'],['Unreal Engine','unreal'],['Git','git'],['Python','python'],['JavaScript','js'],['AI-assisted development'],['Task Management'],['Good Communication'],['English (B2)']];
+$('#chips').innerHTML=skills.map((s,i)=>`<span class="chip${i%3==1?' alt':''}">${s[1]?`<svg><use href="#i-${s[1]}"/></svg>`:''}${s[0]}</span>`).join('');
+
+// experience
+const xp=[['Game Developer','Minimol Games','Case Solved, Puzzle Gallery','May 2026 – now',1],
+['Game Developer','iOSYS / Skycoin','2D survival crafting game','Jun 2025 – Mar 2026'],
+['Multiplayer Programmer','Blue Gravity Studios','Little Sim World','Mar 2024 – Jun 2025'],
+['Game Engineer','Estante Mágica','Magic Land','Mar 2023 – Dec 2024'],
+['Game Developer','Gameplan','Vertical slices, Jam.gg','Apr 2022 – Mar 2023']];
+$('#rows').innerHTML=xp.map(r=>`<div class="row"><div><h4>${r[0]}</h4></div><div class="co">${r[1]}</div><div class="what">${r[2]}</div><div class="when${r[4]?' now':''}">${r[4]?'Currently':r[3]}</div></div>`).join('');
+
+// reveal
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.2});
+document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=i*0.12+'s';io.observe(el)});
+
+// bio word-by-word scroll reveal
+const bio=$('#bio');let words=[];window.bioHTML=bio.innerHTML;
+const splitBio=()=>{[...bio.childNodes].forEach(n=>{
+  if(n.nodeType===3){const f=document.createDocumentFragment();n.textContent.split(/(\s+)/).forEach(t=>{if(!t.trim()){f.append(t);return}const s=document.createElement('span');s.className='w';s.textContent=t;f.append(s)});n.replaceWith(f)}
+  else n.classList.add('w');
+});
+bio.querySelectorAll('.pill').forEach(p=>{const nx=p.nextSibling;if(nx&&nx.nodeType===1&&/^[.,;:!?]/.test(nx.textContent)){const g=document.createElement('span');g.className='nw';p.before(g);g.append(p,nx)}});
+words=[...bio.querySelectorAll('.w')];};
+splitBio();
+const onBio=()=>{const r=bio.getBoundingClientRect(),vh=innerHeight;const p=Math.min(1,Math.max(0,(vh*.85-r.top)/(r.height+vh*.35)));const n=Math.round(p*words.length);words.forEach((w,i)=>w.classList.toggle('on',i<n))};
+addEventListener('scroll',onBio,{passive:true});onBio();
+window.setBio=html=>{bio.innerHTML=html;splitBio();onBio()};
+
+// --- visuals ---
+const NS='http://www.w3.org/2000/svg';
+// vertical slices
+const sl=[['Cloud build','#7dcbff'],['Gameplay loop','#2a96d6'],['Pitch prototype','#0f6499']];
+$('#v-slices').innerHTML=`<svg viewBox="0 0 500 340" preserveAspectRatio="xMidYMid slice"><rect width="500" height="340" fill="#0c1420"/>
+${sl.map((s,i)=>{const y=90+i*62;return `<g class="sl" style="animation-delay:${i*.25}s"><path d="M110 ${y+20} L200 ${y-15} L310 ${y+20} L220 ${y+55}Z" fill="${s[1]}" opacity=".9"/><path d="M110 ${y+20} L110 ${y+32} L220 ${y+67} L220 ${y+55}Z" fill="${s[1]}" opacity=".55"/><path d="M220 ${y+55} L220 ${y+67} L310 ${y+32} L310 ${y+20}Z" fill="${s[1]}" opacity=".35"/><line x1="315" y1="${y+20}" x2="345" y2="${y+20}" stroke="rgba(255,255,255,.3)"/><text x="352" y="${y+25}" font-family="Hanken Grotesk, sans-serif" font-size="14" fill="#d1dae0">${s[0]}</text></g>`}).reverse().join('')}
+<style>.sl{animation:bob 3.2s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-6px)}}</style></svg>`;
+
+// tiny C# highlighter for the code blocks
+window.hlCode=src=>{
+  const e=t=>t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  const re=/(\/\/.*)|("(?:\\.|[^"\\])*")|(^[ \t]*#\w+.*$)|(\b\d+(?:\.\d+)?f?\b|\.\d+f\b)|\b(public|private|static|readonly|class|interface|void|int|float|bool|var|new|return|if|else|while|foreach|for|in|override|async|await|true|false|null|ulong|string|byte)\b|\b([A-Z][A-Za-z0-9_]*)\b(?=\s*\()|\b([A-Z][A-Za-z0-9_]*)\b/gm;
+  let out='',last=0,m;
+  while((m=re.exec(src))){out+=e(src.slice(last,m.index));const cls=m[1]?'c':m[2]?'s':m[3]?'p':m[4]?'n':m[5]?'k':m[6]?'m':'t';out+=`<span class="${cls}">${e(m[0])}</span>`;last=re.lastIndex}
+  return out+e(src.slice(last));
+};
+document.querySelectorAll('.notes pre.code code').forEach(c=>c.innerHTML=hlCode(c.textContent));
+document.addEventListener('click',e=>{const b=e.target.closest('.copy');if(!b)return;const t=b.closest('.codebox').querySelector('code').textContent;
+  const T=x=>window.tr?window.tr(x):x;const done=()=>{b.textContent=T('Copied');setTimeout(()=>b.textContent=T('Copy'),1400)};
+  try{navigator.clipboard.writeText(t).then(done,()=>{b.textContent=T('Select and copy')})}catch(_){b.textContent=T('Select and copy')}});
+
+
+// videos: play only while on screen
+const vio=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting){if(v.preload==='none'){v.preload='auto';v.load()}const p=v.play();p&&p.catch(()=>{})}else v.pause()}),{threshold:.35});
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.querySelectorAll('video.clip').forEach(v=>vio.observe(v));
+else document.querySelectorAll('video.clip').forEach(v=>v.controls=true);
+const reel=$('#reel-video');let reelStarted=false;
+new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!reelStarted&&!matchMedia('(prefers-reduced-motion: reduce)').matches){reelStarted=true;const p=reel.play();p&&p.catch(()=>{})}}),{threshold:.6}).observe(reel);
+}
+</script>
+<script src="lab.js"></script>
+<script src="hero-bg.js"></script>
+</body>
+</html>
