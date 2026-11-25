@@ -104,7 +104,8 @@ h1{margin:0;font-weight:500;font-size:clamp(34px,6vw,56px);text-wrap:balance;lin
 .seed{position:absolute;left:12px;bottom:10px;font:500 11.5px/1 "JetBrains Mono",monospace;color:#d1dae0;background:rgba(0,0,0,.55);padding:6px 8px;border-radius:6px}
 
 /* bio */
-.bio{padding-block:var(--gap);text-align:center}
+.bio{text-align:center;padding:clamp(4px,1vw,12px) 0 clamp(36px,5vw,56px)}
+.xp-title{text-align:center}
 .bio p{max-width:760px;margin:0 auto;font-size:clamp(19px,2.4vw,24px);line-height:2.1;text-wrap:balance}
 .w{opacity:.18;transition:opacity .4s}
 .w.on{opacity:1}
@@ -120,7 +121,13 @@ h1{margin:0;font-weight:500;font-size:clamp(34px,6vw,56px);text-wrap:balance;lin
 
 /* experience */
 .xp{padding-top:var(--gap)}
-.bio+.xp{padding-top:0}
+.xrows{max-width:720px;margin:0 auto;border-top:1px solid var(--line)}
+.xrow{text-align:center;padding:20px 0 22px;border-bottom:1px solid var(--line)}
+.xrow h4{margin:0 0 6px;font-weight:500;font-size:clamp(18px,2.2vw,21px)}
+.xco{margin:0 0 4px;font-size:15.5px;color:var(--soft)}
+.xco .dot{margin:0 10px;color:var(--mute)}
+.xco .xwhen{color:var(--mute);white-space:nowrap}.xco .now{white-space:nowrap}
+.xwhat{margin:0;font-size:14px;color:var(--mute)}
 .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 24px;padding:18px 0;border-bottom:1px solid var(--line)}
 .row h4{margin:0 0 2px;font-weight:500;font-size:clamp(17px,2vw,20px)}
 .row .co{text-align:right;font-size:clamp(17px,2vw,20px);font-weight:500}
@@ -414,13 +421,12 @@ public static class Platform {
     </article>
   </section>
 
-  <section class="bio wrap">
-    <p id="bio">Game developer with <span class="pill">4+ years</span> of industry experience, building with <span class="pill">Unity &amp; C#</span>. Expertise spans <span class="pill">multiplayer</span> and <span class="pill">procedural generation</span>, shipping on Steam, mobile and consoles. Currently works as <span class="pill">Game Developer</span> at Minimol Games.</p>
-  </section>
-
   <section id="experience" class="wrap xp">
-    <h2 class="sec-title">Experience</h2>
-    <div id="rows"></div>
+    <h2 class="sec-title xp-title">Experience</h2>
+    <div class="bio">
+    <p id="bio">Game developer with <span class="pill">4+ years</span> of industry experience, building with <span class="pill">Unity &amp; C#</span>. Expertise spans <span class="pill">multiplayer</span> and <span class="pill">procedural generation</span>, shipping on Steam, mobile and consoles. Currently works as <span class="pill">Game Developer</span> at Minimol Games.</p>
+    </div>
+    <div id="rows" class="xrows"></div>
   </section>
 
   <section id="education" class="wrap edu-sec">
@@ -450,7 +456,7 @@ public static class Platform {
   </div>
 </footer>
 
-<script src="i18n.js?v=5"></script>
+<script src="i18n.js?v=6"></script>
 <script>
 {
 const $=s=>document.querySelector(s);
@@ -472,11 +478,11 @@ $('#chips').innerHTML=skills.map((s,i)=>`<span class="chip${i%3==1?' alt':''}">$
 
 // experience
 const xp=[['Game Developer','Minimol Games','Case Solved, Puzzle Gallery','May 2026 – now',1],
-['Game Developer','iOSYS / Skycoin','2D survival crafting game','Jun 2025 – Mar 2026'],
+['Game Engine Engineer & Game Developer','iOSYS / Skycoin','2D survival crafting game','Jun 2025 – Mar 2026'],
 ['Multiplayer Programmer','Blue Gravity Studios','Little Sim World','Mar 2024 – Jun 2025'],
 ['Game Engineer','Estante Mágica','Magic Land','Mar 2023 – Dec 2024'],
 ['Game Developer','Gameplan','Vertical slices, Jam.gg','Apr 2022 – Mar 2023']];
-$('#rows').innerHTML=xp.map(r=>`<div class="row"><div><h4>${r[0]}</h4></div><div class="co">${r[1]}</div><div class="what">${r[2]}</div><div class="when${r[4]?' now':''}">${r[4]?'Currently':r[3]}</div></div>`).join('');
+$('#rows').innerHTML=xp.map(r=>`<div class="xrow"><h4>${r[0].replace('&','&amp;')}</h4><p class="xco"><span>${r[1]}</span><span class="dot">·</span><span class="${r[4]?'now':'xwhen'}">${r[4]?'Currently':r[3]}</span></p><p class="xwhat">${r[2]}</p></div>`).join('');
 
 // reveal
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.2});

@@ -160,6 +160,7 @@ const D = {
   'Game Developer': ['Desenvolvedor de jogos', 'Desarrollador de videojuegos'],
   'Multiplayer Programmer': ['Programador de multiplayer', 'Programador de multijugador'],
   'Game Engineer': ['Engenheiro de jogos', 'Ingeniero de videojuegos'],
+  'Game Engine Engineer & Game Developer': ['Engenheiro de game engine e desenvolvedor de jogos', 'Ingeniero de motores de juego y desarrollador de videojuegos'],
   'Currently': ['Atualmente', 'Actualmente'],
   'Jun 2025 – Mar 2026': ['jun 2025 – mar 2026', 'jun 2025 – mar 2026'],
   'Mar 2024 – Jun 2025': ['mar 2024 – jun 2025', 'mar 2024 – jun 2025'],
