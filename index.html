@@ -426,7 +426,7 @@ public static class Platform {
     <div class="bio">
     <p id="bio">Game developer with <span class="pill">4+ years</span> of industry experience, building with <span class="pill">Unity &amp; C#</span>. Expertise spans <span class="pill">multiplayer</span> and <span class="pill">procedural generation</span>, shipping on Steam, mobile and consoles. Currently works as <span class="pill">Game Developer</span> at Minimol Games.</p>
     </div>
-    <div id="rows" class="xrows"></div>
+    <div id="rows"></div>
   </section>
 
   <section id="education" class="wrap edu-sec">
@@ -482,7 +482,7 @@ const xp=[['Game Developer','Minimol Games','Case Solved, Puzzle Gallery','May 2
 ['Multiplayer Programmer','Blue Gravity Studios','Little Sim World','Mar 2024 – Jun 2025'],
 ['Game Engineer','Estante Mágica','Magic Land','Mar 2023 – Dec 2024'],
 ['Game Developer','Gameplan','Vertical slices, Jam.gg','Apr 2022 – Mar 2023']];
-$('#rows').innerHTML=xp.map(r=>`<div class="xrow"><h4>${r[0].replace('&','&amp;')}</h4><p class="xco"><span>${r[1]}</span><span class="dot">·</span><span class="${r[4]?'now':'xwhen'}">${r[4]?'Currently':r[3]}</span></p><p class="xwhat">${r[2]}</p></div>`).join('');
+$('#rows').innerHTML=xp.map(r=>`<div class="row"><div><h4>${r[0].replace('&','&amp;')}</h4></div><div class="co">${r[1]}</div><div class="what">${r[2]}</div><div class="when${r[4]?' now':''}">${r[4]?'Currently':r[3]}</div></div>`).join('');
 
 // reveal
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.2});
