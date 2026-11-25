@@ -84,6 +84,16 @@ function draw() {
   }
 }
 
+function settle() {                 // set the brightness scale from the current trail (for still frames)
+  let max = 0;
+  for (let ty = 0; ty < rows; ty++) for (let tx = 0; tx < cols; tx++) {
+    let s = 0;
+    for (let sy = 0; sy < SUB; sy++) { const o = (ty * SUB + sy) * SW + tx * SUB; for (let sx = 0; sx < SUB; sx++) s += trail[o + sx]; }
+    if (s > max) max = s;
+  }
+  peak = Math.max(.5, max / (SUB * SUB) * .6);
+}
+
 function autopilot() {               // slow drifting point when nobody is steering
   mx = W * (.5 + .36 * Math.cos(t * .23) * Math.sin(t * .11 + 1));
   my = H * (.5 + .34 * Math.sin(t * .31));
@@ -103,8 +113,14 @@ hero.addEventListener('pointerdown', e => {            // a click drops a big bu
 new ResizeObserver(() => { size(); draw(); }).observe(hero);
 new IntersectionObserver(es => es.forEach(e => visible = e.isIntersecting), { threshold: 0 }).observe(hero);
 size();
-if (reduce) { draw(); return; }
 for (let i = 0; i < 240; i++) { t += 1 / 60; autopilot(); step(); }   // start with a network already grown
+if (reduce) {                       // reduced motion: show the grown network as a still image
+  for (let i = 0; i < 160; i++) { t += 1 / 60; autopilot(); step(); }
+  mx = my = -1e4; for (let i = 0; i < 25; i++) step();   // let the cursor blob fade so only the web remains
+  settle(); draw();
+  new ResizeObserver(() => { for (let i = 0; i < 300; i++) { t += 1 / 60; autopilot(); step(); } mx = my = -1e4; for (let i = 0; i < 25; i++) step(); settle(); draw(); }).observe(hero);
+  return;
+}
 let last = 0;
 const loop = now => {
   requestAnimationFrame(loop);
