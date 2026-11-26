@@ -11,6 +11,7 @@ const D = {
     ['Desenvolvedor de jogos de Fortaleza. Faço jogos multiplayer, procedurais e multiplataforma em Unity e C#.',
      'Desarrollador de videojuegos de Fortaleza. Hago juegos multijugador, procedurales y multiplataforma en Unity y C#.'],
   "Let's talk": ['Vamos conversar', 'Hablemos'],
+  'Download CV': ['Baixar CV', 'Descargar CV'],
   'Showreel 2026. Footage from the official trailers of games I worked on, plus the terrain lab.':
     ['Showreel 2026. Cenas dos trailers oficiais dos jogos em que trabalhei, mais o laboratório de terreno.',
      'Showreel 2026. Escenas de los tráilers oficiales de los juegos en los que trabajé, más el laboratorio de terreno.'],
