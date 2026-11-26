@@ -318,7 +318,7 @@ if (labCv) {
     if (tag) { tag.textContent = k < 0 ? '' : `${k + 1}/${STAGES.length}  ${tr(s[0])}`; tag.hidden = k < 0; }
     desc.textContent = tr(k < 0 ? 'Press play or pick a step.' : s[1]);
     const src = k < 0 ? STAGES[0][2] : s[2];
-    if (window.hlCode) code.innerHTML = window.hlCode(src); else code.textContent = src;
+    if (code) { if (window.hlCode) code.innerHTML = window.hlCode(src); else code.textContent = src; }
   };
   lab.on(e => { show(lab.stage); seedEl.textContent = tr('seed') + ' ' + lab.seed; });
   const loop = t => {

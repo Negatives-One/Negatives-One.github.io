@@ -166,7 +166,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:10px 22px}footer a:hover{color:#fff}
 .stages button.on{color:#fff;border-color:rgba(255,255,255,.45);background:rgba(52,67,84,.7)}
 .lab-ctrl{display:flex;gap:10px}
 .lab-ctrl .btn{min-height:40px;padding:0 18px;font-size:14px}
-.lab-info{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:20px 32px;align-items:start;margin-top:24px}
+.lab-info{display:grid;grid-template-columns:minmax(0,1fr);gap:20px 32px;align-items:start;margin-top:24px}
 .lab-title{margin:4px 0 8px;font-weight:500;font-size:20px}
 .lab-desc{margin:0;color:var(--soft);max-width:48ch}
 .lab-info .code{min-height:9.5em}
@@ -350,7 +350,6 @@ footer nav{display:flex;flex-wrap:wrap;gap:10px 22px}footer a:hover{color:#fff}
     </div>
     <div class="lab-info">
       <div><h3 id="lab-title" class="lab-title">Terrain generation</h3><p id="lab-desc" class="lab-desc"></p></div>
-      <div class="codebox"><div class="codebar"><span>TerrainGenerator.cs</span><button class="copy" type="button">Copy</button></div><pre class="code"><code id="lab-code"></code></pre></div>
     </div>
   </section>
 
@@ -397,26 +396,6 @@ public class Needs : NetworkBehaviour {
         <p>Case Solved launched on Steam, PS5, Xbox Series X|S, Switch and Switch 2, iOS and Android from one Unity project.</p>
         <p>Most of the work was keeping platform differences out of the game code. Saves, achievements and store features sit behind one interface with a different implementation per platform, picked at build time. Input prompts change with the device, and the UI had to hold up on a TV, a Switch in handheld mode and a phone.</p>
         <p class="note-out">It launched on all six storefronts in July 2026, including Google Play Pass.</p>
-        <details class="code-toggle"><summary>Show code</summary><div class="codebox"><div class="codebar"><span>Platform.cs</span><button class="copy" type="button">Copy</button></div><pre class="code"><code>// simplified
-public interface IPlatformServices {
-    Task SaveAsync(string slot, byte[] data);
-    void UnlockAchievement(string id);
-}
-
-public static class Platform {
-    public static readonly IPlatformServices Services =
-#if UNITY_PS5
-        new PS5Services();
-#elif UNITY_SWITCH
-        new SwitchServices();
-#elif UNITY_GAMECORE
-        new XboxServices();
-#elif UNITY_IOS || UNITY_ANDROID
-        new MobileServices();
-#else
-        new SteamServices();
-#endif
-}</code></pre></div></details>
       </div>
     </article>
   </section>
@@ -525,7 +504,7 @@ const reel=$('#reel-video');let reelStarted=false;
 new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!reelStarted&&!matchMedia('(prefers-reduced-motion: reduce)').matches){reelStarted=true;const p=reel.play();p&&p.catch(()=>{})}}),{threshold:.6}).observe(reel);
 }
 </script>
-<script src="lab.js?v=4"></script>
+<script src="lab.js?v=5"></script>
 <script src="hero-bg.js?v=5"></script>
 </body>
 </html>
