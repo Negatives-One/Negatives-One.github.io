@@ -525,7 +525,7 @@ const reel=$('#reel-video');let reelStarted=false;
 new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!reelStarted&&!matchMedia('(prefers-reduced-motion: reduce)').matches){reelStarted=true;const p=reel.play();p&&p.catch(()=>{})}}),{threshold:.6}).observe(reel);
 }
 </script>
-<script src="lab.js?v=3"></script>
+<script src="lab.js?v=4"></script>
 <script src="hero-bg.js?v=5"></script>
 </body>
 </html>

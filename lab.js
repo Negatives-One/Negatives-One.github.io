@@ -116,14 +116,14 @@ class Terrain {
         tmp[y * W + x] = v / 9 * .92;
       }
       trail.set(tmp);
-      if (s % (2 * this.speed) === 0) { this.overlay = this.trailOverlay(trail, agents); yield; }
+      if (s % (12 * this.speed) === 0) yield;
     }
     // carve the strongest ~4% of underground trail cells
     const vals = []; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (ok(x, y) && trail[this.idx(x, y)] > 0) vals.push(trail[this.idx(x, y)]);
     vals.sort((a, b) => a - b);
     const cut = vals.length ? vals[Math.floor(vals.length * .93)] : 1e9;
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const i = this.idx(x, y); if (ok(x, y) && trail[i] >= cut) this.g[i] = AIR; }
-    for (let k = 0; k < 10; k++) { this.overlay = this.trailOverlay(trail, null, 1 - k / 10); yield; }
+    yield;
     this.overlay = null;
   }
   trailOverlay(trail, agents, fade = 1) {
